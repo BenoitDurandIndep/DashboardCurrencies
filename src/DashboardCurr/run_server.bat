@@ -1,0 +1,1 @@
+C:\Formations\DashboardCurrencies\.env\Scripts\Python.exe C:\Formations\DashboardCurrencies\src\manage.py runserver

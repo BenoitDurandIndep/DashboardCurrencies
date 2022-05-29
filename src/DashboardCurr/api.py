@@ -5,8 +5,6 @@ from decouple import config
 
 API_LAYER_KEY = config("API_LAYER_KEY")
 
-# SET PRIVATE KEY IN A CONF FILE LIKE DJANGO PRIVATE KEY
-
 
 def get_rates(currencies, base="EUR", days=30):
 
@@ -20,7 +18,7 @@ def get_rates(currencies, base="EUR", days=30):
 
     req = requests.get(
         url=f"{base_url_api}base={base}&start_date={start_date}&end_date={end_date}&symbols={','.join(currencies)}", headers=headers, data=payload)
-    
+
     if not req and not req.json():
         return False, False
 
@@ -28,12 +26,15 @@ def get_rates(currencies, base="EUR", days=30):
 
     api_rates = req.json().get("rates")
 
-    all_rates = {currency:[] for currency in currencies} #get currencies in a dictionnay 
+    all_rates = {currency: []
+                 for currency in currencies}  # get currencies in a dictionnay
     all_days = sorted(api_rates.keys())
 
     for each_day in all_days:
-        #print(api_rates.get(each_day))
-        [all_rates [ currency].append(rate)  for currency, rate in api_rates[each_day].items() ] #add rates in the dictionnary
+        # print(api_rates.get(each_day))
+        # add rates in the dictionnary
+        [all_rates[currency].append(rate)
+         for currency, rate in api_rates[each_day].items()]
 
     pprint(all_rates)
 
