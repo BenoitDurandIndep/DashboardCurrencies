@@ -1,23 +1,44 @@
 from datetime import date, timedelta
 from pprint import pprint
 import requests
+from decouple import config
+
+API_LAYER_KEY = config("API_LAYER_KEY")
 
 # SET PRIVATE KEY IN A CONF FILE LIKE DJANGO PRIVATE KEY
 
 
-def get_rates(currencies, days=30):
+def get_rates(currencies, base="EUR", days=30):
+
     end_date = date.today()
     start_date = end_date-timedelta(days=days)
+    base_url_api = "https://api.apilayer.com/exchangerates_data/timeseries?"
+    payload = {}
+    headers = {
+        "apikey": API_LAYER_KEY
+    }
 
     req = requests.get(
-        url=f"https://api.apilayer.com/exchangerates_data/history?start_at={start_date}&end_date={end_date}&symbols={','.join(currencies)}")
+        url=f"{base_url_api}base={base}&start_date={start_date}&end_date={end_date}&symbols={','.join(currencies)}", headers=headers, data=payload)
+    
     if not req and not req.json():
         return False, False
 
+    print(f"statut={req.status_code}")
+
     api_rates = req.json().get("rates")
-    pprint(api_rates)
+
+    all_rates = {currency:[] for currency in currencies} #get currencies in a dictionnay 
+    all_days = sorted(api_rates.keys())
+
+    for each_day in all_days:
+        #print(api_rates.get(each_day))
+        [all_rates [ currency].append(rate)  for currency, rate in api_rates[each_day].items() ] #add rates in the dictionnary
+
+    pprint(all_rates)
+
     return None, None
 
 
 if __name__ == '__main__':
-    days, rates = get_rates(currencies=["USD", "EUR"])
+    days, rates = get_rates(currencies=["USD", "CAD"], base="EUR")
