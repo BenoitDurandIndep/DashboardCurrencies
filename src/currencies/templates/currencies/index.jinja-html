@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Currencies Dashboard - {{ page_label }}</title>
+        <!-- set as static files-->
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+              integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+              crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js" integrity="sha256-cHVO4dqZfamRhWD7s4iXyaXWVK10odD+qp4xidFzqTI=" crossorigin="anonymous"></script>
+    </head>
+    <body class="bg-dark">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <h1 class="text-white">Dashboard - {{ page_label }}</h1>
+                    <a href="{% url 'home' days_range=7 currencies=currencies %}"
+                       class="btn {% if page_label == 'Week' %} btn-info {% else %}btn-secondary {% endif %}">Week</a>
+                    <a href="{% url 'home' days_range=30 currencies=currencies %}"
+                       class="btn {% if page_label == 'Month' %} btn-info {% else %}btn-secondary {% endif %}">Month</a>
+                    <a href="{% url 'home' days_range=365 currencies=currencies %}"
+                       class="btn {% if page_label == 'Year' %} btn-info {% else %}btn-secondary {% endif %}">Year</a>
+                </div>
+            </div>
+            <div class="row justify-content-center">
+                {% for currency, rates in data.items %}
+                    <div class="col-md-10 col-lg-6">
+                        <canvas id="chart-{{ currency }}"></canvas>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <!-- put JS in a separate file-->
+        <script>
+    {% for currency,rates in data.items%}
+        var ctx = document.getElementById("chart-{{currency}}");
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ days_labels|safe }},
+            datasets: [{
+                label: "{{currency}}",
+                data: {{ rates|safe }},
+            fill: false,
+            borderColor: 'rgb(255,128,128)'
+                }]
+            }
+        });
+        {%endfor%}
+        </script>
+    </body>
+</html>

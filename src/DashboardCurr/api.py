@@ -36,10 +36,12 @@ def get_rates(currencies, base="EUR", days=30):
         [all_rates[currency].append(rate)
          for currency, rate in api_rates[each_day].items()]
 
-    pprint(all_rates)
+    #pprint(all_rates)
 
-    return None, None
+    return all_days, all_rates
 
 
 if __name__ == '__main__':
     days, rates = get_rates(currencies=["USD", "CAD"], base="EUR")
+    pprint(days)
+    pprint(rates)

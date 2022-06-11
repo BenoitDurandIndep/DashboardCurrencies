@@ -19,6 +19,7 @@ from django.urls import path
 from currencies.views import dashboard
 
 urlpatterns = [
-    path('',dashboard, name='dashboard'),
+    path('',dashboard, name='home'),
+    path('days_range=<int:days_range>&currencies=<str:currencies>',dashboard, name='home'),
     path('admin/', admin.site.urls),
 ]
