@@ -1,8 +1,11 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import redirect, render, HttpResponse
 
 from DashboardCurr import api
 
 # Create your views here.
+
+def redirect_index(request):
+    return redirect("home",days_range=30, currencies="USD")
 
 
 def dashboard(request, days_range=30, currencies="USD"):
